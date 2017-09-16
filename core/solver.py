@@ -219,6 +219,7 @@ class CaptioningSolver(object):
 
                     # Plot original image
                     img = np.array(resize_image(Image.open(image_files[n])))
+                    plt.subplot(img)
                     plt.subplot(4, 5, 1)
                     plt.imshow(img)
                     plt.axis('off')
@@ -229,7 +230,7 @@ class CaptioningSolver(object):
                         if t > 18:
                             break
                         plt.subplot(4, 5, t+2)
-                        plt.text(0, 1, '%s(%.2f)'%(words[t], bts[n,t]) , color='black', backgroundcolor='white', fontsize=8)
+                        plt.text(0, 1, '%s(%.2f)'%(unicode(words[t]), bts[n,t]) , color='black', backgroundcolor='white', fontsize=8)
                         plt.imshow(img)
                         alp_curr = alps[n,t,:].reshape(14,14)
                         alp_img = skimage.transform.pyramid_expand(alp_curr, upscale=16, sigma=20)
