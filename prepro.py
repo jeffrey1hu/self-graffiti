@@ -9,6 +9,7 @@ from scipy import ndimage
 import hickle
 import tensorflow as tf
 from PIL import Image
+from config import *
 
 def fenci(sentence):
     return ' '.join(jieba.cut(sentence))
@@ -119,12 +120,10 @@ def main():
     # if word occurs less than word_count_threshold in training dataset, the word index is special unknown token.
     word_count_threshold = 1
 
-    DATA_PATH = '/mnt/ai_challenger_caption_train_20170902'
-    train_caption_file = DATA_PATH + '/caption_train_annotations_20170902.json'
-    image_dir = DATA_PATH + '/caption_train_images_20170902/'
-    val_caption_file = '/mnt/ai_challenger_caption_validation_20170910/caption_validation_annotations_20170910.json'
-    val_image_dir = '/mnt/ai_challenger_caption_validation_20170910/caption_validation_images_20170910/'
-    vgg_model_path = '/mnt/image_caption/show-attend-and-tell/data/imagenet-vgg-verydeep-19.mat'
+    train_caption_file = TRAIN_DATA_PATH + '/caption_train_annotations_20170902.json'
+    image_dir = TRAIN_DATA_PATH + '/caption_train_images_20170902/'
+    val_caption_file = VAL_DATA_PATH + '/caption_validation_annotations_20170910.json'
+    val_image_dir = VAL_DATA_PATH + '/caption_validation_images_20170910/'
 
     train_dataset = _process_caption_data(train_caption_file, image_dir, max_length)
     val_dataset = _process_caption_data(val_caption_file, val_image_dir, max_length)
@@ -178,7 +177,7 @@ def main():
     sess = tf.Session()
     sess.run(init_op)
     tf.reset_default_graph()
-    vggnet = Vgg19(vgg_model_path)
+    vggnet = Vgg19(VGG_MODEL_PATH)
     vggnet.build()
     with tf.Session() as sess:
         tf.initialize_all_variables().run()
