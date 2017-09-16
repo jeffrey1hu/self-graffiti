@@ -226,9 +226,11 @@ class CaptioningSolver(object):
                     print "Sampled Caption: %s" %decoded[n]
 
                     # Plot original image
+                    print "<< original image >>"
                     plt.imshow(Image.open(image_files[n]))
                     plt.axis('off')
 
+                    print "<< attention array >>"
                     img = np.array(resize_image(Image.open(image_files[n])))
                     plt.subplot(4, 5, 1)
                     plt.imshow(img)
