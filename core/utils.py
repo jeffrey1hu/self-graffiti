@@ -59,8 +59,13 @@ def sample_coco_minibatch(data, batch_size):
     data_size = data['features'].shape[0]
     mask = np.random.choice(data_size, batch_size)
     features = data['features'][mask]
+    captions = data['captions']
+    image_idxs = data['image_idxs']
     file_names = data['file_names'][mask]
-    return features, file_names
+    ground_truths = []
+    for idx in mask:
+        ground_truths.append(captions[image_idxs == idx])
+    return features, file_names, ground_truths
 
 def write_bleu(scores, path, epoch):
     if epoch == 0:
