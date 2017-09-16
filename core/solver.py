@@ -216,8 +216,8 @@ class CaptioningSolver(object):
             if attention_visualization:
                 for n in range(10):
                     # print ground truth
-                    decoded = decode_captions(ground_truths[n], self.model.idx_to_word)
-                    for j, gt in enumerate(decoded):
+                    decoded_gt = decode_captions(ground_truths[n], self.model.idx_to_word)
+                    for j, gt in enumerate(decoded_gt):
                         print "Ground truth %d: %s" %(j+1, gt)
                     # print caption result
                     print "Sampled Caption: %s" %decoded[n]
