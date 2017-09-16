@@ -12,10 +12,8 @@ from PIL import Image
 from core.vggnet import resize_image
 
 from matplotlib import font_manager
-
-fontP = font_manager.FontProperties()
-fontP.set_family('SimHei')
-fontP.set_size(14)
+font_path = "/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc"
+fontP = font_manager.FontProperties(fname=font_path)
 
 class CaptioningSolver(object):
     def __init__(self, model, data, val_data, **kwargs):
