@@ -219,7 +219,7 @@ class CaptioningSolver(object):
 
                     # Plot original image
                     img = np.array(resize_image(Image.open(image_files[n])))
-                    plt.subplot(img)
+                    plt.imshow(img)
                     plt.subplot(4, 5, 1)
                     plt.imshow(img)
                     plt.axis('off')
