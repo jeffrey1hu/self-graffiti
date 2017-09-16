@@ -229,6 +229,7 @@ class CaptioningSolver(object):
                     print "<< original image >>"
                     plt.imshow(Image.open(image_files[n]))
                     plt.axis('off')
+                    plt.show()
 
                     print "<< attention array >>"
                     img = np.array(resize_image(Image.open(image_files[n])))
@@ -249,6 +250,9 @@ class CaptioningSolver(object):
                         plt.imshow(alp_img, alpha=0.85)
                         plt.axis('off')
                     plt.show()
+                    print ""
+                    print ""
+                    print ""
 
             if save_sampled_captions:
                 all_sam_cap = np.ndarray((features.shape[0], 20))
