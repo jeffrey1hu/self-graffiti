@@ -11,6 +11,11 @@ from bleu import evaluate
 from PIL import Image
 from core.vggnet import resize_image
 
+from matplotlib import font_manager
+
+fontP = font_manager.FontProperties()
+fontP.set_family('SimHei')
+fontP.set_size(14)
 
 class CaptioningSolver(object):
     def __init__(self, model, data, val_data, **kwargs):
@@ -237,7 +242,7 @@ class CaptioningSolver(object):
                         if t > 18:
                             break
                         plt.subplot(4, 5, t+2)
-                        plt.text(0, 1, '%s(%.2f)'%(unicode(words[t]), bts[n,t]) , color='black', backgroundcolor='white', fontsize=8)
+                        plt.text(0, 1, '%s(%.2f)'%(unicode(words[t]), bts[n,t]) , color='black', backgroundcolor='white', fontsize=8, fontproperties=fontP)
                         plt.imshow(img)
                         alp_curr = alps[n,t,:].reshape(14,14)
                         alp_img = skimage.transform.pyramid_expand(alp_curr, upscale=16, sigma=20)
