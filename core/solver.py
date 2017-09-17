@@ -178,8 +178,8 @@ class CaptioningSolver(object):
                     
                     all_decoded = decode_captions(all_gen_cap, self.model.idx_to_word)
                     save_pickle(all_decoded, "./data/val/val.candidate.captions.pkl")
-                    scores = evaluate(data_path='./data', split='val', get_scores=True)
-                    write_bleu(scores=scores, path=self.model_path, epoch=e)
+                    # scores = evaluate(data_path='./data', split='val', get_scores=True)
+                    # write_bleu(scores=scores, path=self.model_path, epoch=e)
 
                 # save model's parameters
                 if (e+1) % self.save_every == 0:
