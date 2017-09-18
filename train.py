@@ -18,7 +18,7 @@ def main():
     val_data = load_coco_data(data_path='./data', split='val')
 
     model = CaptionGenerator(word_to_idx, dim_feature=[196, 512], dim_embed=512,
-                                       dim_hidden=1500, n_time_step=16, prev2out=True,
+                                       dim_hidden=800, n_time_step=16, prev2out=True,
                                                  ctx2out=True, alpha_c=1.0, selector=True, dropout=True)
 
     solver = CaptioningSolver(model, data, val_data, n_epochs=20, batch_size=128, update_rule='adam',
@@ -35,4 +35,9 @@ if __name__ == '__main__':
 # batch size 128,
 #     model = CaptionGenerator(word_to_idx, dim_feature=[196, 512], dim_embed=512,
 #                                        dim_hidden=1024, n_time_step=16, prev2out=True,
+#                                                  ctx2out=True, alpha_c=1.0, selector=True, dropout=True)
+
+# version 2
+#     model = CaptionGenerator(word_to_idx, dim_feature=[196, 512], dim_embed=512,
+#                                        dim_hidden=1500, n_time_step=16, prev2out=True,
 #                                                  ctx2out=True, alpha_c=1.0, selector=True, dropout=True)
