@@ -17,8 +17,8 @@ def main():
     # load val dataset to print out bleu scores every epoch
     val_data = load_coco_data(data_path='./data', split='val')
 
-    model = CaptionGenerator(word_to_idx, dim_feature=[196, 512], dim_embed=800,
-                                       dim_hidden=1024, n_time_step=16, prev2out=True,
+    model = CaptionGenerator(word_to_idx, dim_feature=[196, 512], dim_embed=512,
+                                       dim_hidden=2000, n_time_step=16, prev2out=True,
                                                  ctx2out=True, alpha_c=1.0, selector=True, dropout=True)
 
     solver = CaptioningSolver(model, data, val_data, n_epochs=20, batch_size=128, update_rule='adam',
