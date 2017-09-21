@@ -5,10 +5,10 @@ from core.utils import load_coco_data
 import tensorflow as tf
 from core.vggnet import Vgg19
 
-# init_op = tf.initialize_all_variables()
-# sess = tf.Session()
-# sess.run(init_op)
-# tf.reset_default_graph()
+init_op = tf.initialize_all_variables()
+sess = tf.Session()
+sess.run(init_op)
+tf.reset_default_graph()
 
 def main():
     # load train dataset
