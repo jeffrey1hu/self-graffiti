@@ -3,13 +3,18 @@ import matplotlib.pyplot as plt
 import skimage.transform
 import numpy as np
 import time
-import os 
+import os
+import json
+import sys
 import cPickle as pickle
 from scipy import ndimage
 from utils import *
 from bleu import evaluate
 from PIL import Image
 from core.vggnet import resize_image
+
+sys.path.append('../AI_Challenger/AI_Challenger_eval_public/caption_eval')
+from run_evaluations import compute_m1
 
 from matplotlib import font_manager
 font_path = "/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc"
@@ -177,9 +182,19 @@ class CaptioningSolver(object):
                         all_gen_cap[i*self.batch_size:(i+1)*self.batch_size] = gen_cap
                     
                     all_decoded = decode_captions(all_gen_cap, self.model.idx_to_word)
-                    save_pickle(all_decoded, "./data/val/val.candidate.captions.pkl")
-                    # scores = evaluate(data_path='./data', split='val', get_scores=True)
-                    # write_bleu(scores=scores, path=self.model_path, epoch=e)
+
+                    all_decoded = map(lambda x: x.replace(' ', ''), all_decoded)
+
+                    evaluated_captions = []
+                    split = 'val'
+                    for idx, caption in enumerate(all_decoded):
+                        image_id = self.val_data['file_names'][idx].split('/')[-1]
+                        evaluated_captions.append({'image_id': image_id, 'caption': caption})
+                    json.dump(evaluated_captions, open('./data/%s/%s.evaluated.json' % (split, split), 'w'))
+                    json_predictions_file = './data/%s/%s.evaluated.json' % (split, split)
+                    reference_file = './data/%s/%s.references.json' % (split, split)
+                    scores = compute_m1(json_predictions_file, reference_file)
+                    write_bleu(scores=scores, path=self.model_path, epoch=e)
 
                 # save model's parameters
                 if (e+1) % self.save_every == 0:
@@ -262,4 +277,16 @@ class CaptioningSolver(object):
                     feed_dict = { self.model.features: features_batch }
                     all_sam_cap[i*self.batch_size:(i+1)*self.batch_size] = sess.run(sampled_captions, feed_dict)  
                 all_decoded = decode_captions(all_sam_cap, self.model.idx_to_word)
-                save_pickle(all_decoded, "./data/%s/%s.candidate.captions.pkl" %(split,split))
+                all_decoded = map(lambda x: x.replace(' ', ''), all_decoded)
+
+                evaluated_captions = []
+                split = 'val'
+                for idx, caption in enumerate(all_decoded):
+                    image_id = self.val_data['file_names'][idx].split('/')[-1]
+                    evaluated_captions.append({'image_id': image_id, 'caption': caption})
+                json.dump(evaluated_captions, open('./data/%s/%s.test_model_evaluated.json' % (split, split), 'w'))
+                json_predictions_file = './data/%s/%s.test_model_evaluated.json' % (split, split)
+                reference_file = './data/%s/%s.references.json' % (split, split)
+                scores = compute_m1(json_predictions_file, reference_file)
+                print "<< the performance for model %s >>" % self.test_model
+                print scores

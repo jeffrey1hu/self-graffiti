@@ -5,11 +5,13 @@ from core.utils import *
 from core.vggnet import Vgg19, resize_image
 from collections import Counter
 import os
+import sys
 from scipy import ndimage
 import hickle
 import tensorflow as tf
 from PIL import Image
 from config import *
+import hashlib
 
 def fenci(sentence):
     return ' '.join(jieba.cut(sentence))
@@ -112,6 +114,25 @@ def _build_image_idxs(annotations, id_to_idx):
         image_idxs[i] = id_to_idx[image_id]
     return image_idxs
 
+def generate_contest_reference(annotations, split):
+    # prepare reference captions to compute bleu scores later
+    ref_images = []
+    ref_annotations = []
+    image_ids = set()
+    i = -1
+    id = 1
+    for fenci_caption, image_id in zip(annotations['fenci_caption'], annotations['image_id']):
+        image_hash = int(int(hashlib.sha256(image_id).hexdigest(), 16) % sys.maxint)
+        if not image_id in image_ids:
+            image_ids.add(image_id)
+            i += 1
+            ref_images.append({'file_name': image_id, 'id': image_hash})
+        ref_annotations.append({'caption': fenci_caption, 'id': id, 'image_id': image_hash})
+        id += 1
+    result = {'annotations': ref_annotations, 'images': ref_images, "type": "captions", 'info': {}, 'licenses': {}}
+    json.dump(result, open('./data/%s/%s.references.json' % (split, split), 'w'))
+    print "Finished building %s caption dataset" %split
+
 def main():
     # batch size for extracting feature vectors from vggnet.
     batch_size = 100
@@ -160,17 +181,17 @@ def main():
         save_pickle(image_idxs, './data/%s/%s.image.idxs.pkl' % (split, split))
 
         # prepare reference captions to compute bleu scores later
-        image_ids = set()
-        feature_to_captions = {}
-        i = -1
-        for caption, image_id in zip(annotations['caption'], annotations['image_id']):
-            if not image_id in image_ids:
-                image_ids.add(image_id)
-                i += 1
-                feature_to_captions[i] = []
-            feature_to_captions[i].append(caption + ' .')
-        save_pickle(feature_to_captions, './data/%s/%s.references.pkl' % (split, split))
-        print "Finished building %s caption dataset" %split
+        # image_ids = set()
+        # feature_to_captions = {}
+        # i = -1
+        # for caption, image_id in zip(annotations['caption'], annotations['image_id']):
+        #     if not image_id in image_ids:
+        #         image_ids.add(image_id)
+        #         i += 1
+        #         feature_to_captions[i] = []
+        #     feature_to_captions[i].append(caption + ' .')
+        # save_pickle(feature_to_captions, './data/%s/%s.references.pkl' % (split, split))
+        # print "Finished building %s caption dataset" %split
 
     # extract conv5_3 feature vectors
     init_op = tf.initialize_all_variables()
