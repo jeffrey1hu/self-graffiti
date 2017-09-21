@@ -290,3 +290,4 @@ class CaptioningSolver(object):
                 scores = compute_m1(json_predictions_file, reference_file)
                 print "<< the performance for model %s >>" % self.test_model
                 print scores
+                return scores
