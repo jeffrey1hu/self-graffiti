@@ -19,11 +19,11 @@ def main():
 
     model = CaptionGenerator(word_to_idx, dim_feature=[196, 512], dim_embed=512,
                                        dim_hidden=2000, n_time_step=16, prev2out=True,
-                                                 ctx2out=True, alpha_c=1.0, selector=True, dropout=True)
+                                                 ctx2out=True, alpha_c=2.0, selector=True, dropout=True)
 
     solver = CaptioningSolver(model, data, val_data, n_epochs=20, batch_size=128, update_rule='adam',
                                           learning_rate=0.001, print_every=1000, save_every=1, image_path='./image/',
-                                    pretrained_model=None, model_path='model/lstm4/', test_model='model/lstm/model-10',
+                                    pretrained_model=None, model_path='model/lstm5/', test_model='model/lstm/model-10',
                                      print_bleu=True, log_path='log/')
     solver.train()
 
@@ -45,4 +45,9 @@ if __name__ == '__main__':
 # version 3
 #     model = CaptionGenerator(word_to_idx, dim_feature=[196, 512], dim_embed=512,
 #                                        dim_hidden=800, n_time_step=16, prev2out=True,
+#                                                  ctx2out=True, alpha_c=1.0, selector=True, dropout=True)
+
+# verson 4
+#     model = CaptionGenerator(word_to_idx, dim_feature=[196, 512], dim_embed=512,
+#                                        dim_hidden=2000, n_time_step=16, prev2out=True,
 #                                                  ctx2out=True, alpha_c=1.0, selector=True, dropout=True)
