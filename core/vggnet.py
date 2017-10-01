@@ -2,7 +2,7 @@ from scipy import ndimage
 import numpy as np
 import tensorflow as tf
 import scipy.io
-from PIL import Image
+from keras.preprocessing import image
 
 
 vgg_layers = ['conv1_1', 'relu1_1', 'conv1_2', 'relu1_2', 'pool1',
@@ -63,24 +63,7 @@ class Vgg19(object):
         self.build_model()
 
 
-def resize_image(image):
-    width, height = image.size
-    if width > height:
-        left = (width - height) / 2
-        right = width - left
-        top = 0
-        bottom = height
-    else:
-        top = (height - width) / 2
-        bottom = height - top
-        left = 0
-        right = width
-    image = image.crop((left, top, right, bottom))
-    image = image.resize([224, 224], Image.ANTIALIAS)
-    return image
+def load_and_resize_image(image_path):
+    _img = image.load_img(image_path, target_size=(224, 224))
+    return image.img_to_array(_img)
 
-
-def extract_image_feature(sess, vggnet, image_batch_file):
-    image_batch = np.array(map(lambda x: np.array(resize_image(Image.open(x))), image_batch_file)).astype(np.float32)
-    feats = sess.run(vggnet.features, feed_dict={vggnet.images: image_batch})
-    return feats

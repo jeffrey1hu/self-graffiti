@@ -11,7 +11,7 @@ from scipy import ndimage
 from utils import *
 from bleu import evaluate
 from PIL import Image
-from core.vggnet import resize_image
+from core.vggnet import load_and_resize_image
 
 sys.path.append('../AI_Challenger/AI_Challenger_eval_public/caption_eval')
 from run_evaluations import compute_m1
@@ -247,7 +247,7 @@ class CaptioningSolver(object):
                     plt.show()
 
                     print "<< attention array >>"
-                    img = np.array(resize_image(Image.open(image_files[n])))
+                    img = load_and_resize_image(image_files[n])
                     plt.subplot(4, 5, 1)
                     plt.imshow(img)
                     plt.axis('off')

@@ -2,7 +2,7 @@ import json
 import jieba
 import pandas as pd
 from core.utils import *
-from core.vggnet import Vgg19, resize_image
+from core.vggnet import Vgg19, load_and_resize_image
 from collections import Counter
 import os
 import sys
@@ -145,17 +145,18 @@ def main():
     image_dir = TRAIN_DATA_PATH + '/caption_train_images_20170902/'
     val_caption_file = VAL_DATA_PATH + '/caption_validation_annotations_20170910.json'
     val_image_dir = VAL_DATA_PATH + '/caption_validation_images_20170910/'
-    test_caption_file = TEST_DATA_PATH + '/caption_validation_annotations_20170910.json'
-    test_image_dir = TEST_DATA_PATH + '/caption_validation_images_20170910/'
+    # test_caption_file = TEST_DATA_PATH + '/caption_validation_annotations_20170910.json'
+    # test_image_dir = TEST_DATA_PATH + '/caption_validation_images_20170910/'
 
 
 
     train_dataset = _process_caption_data(train_caption_file, image_dir, max_length)
     val_dataset = _process_caption_data(val_caption_file, val_image_dir, max_length)
-    test_dataset = _process_caption_data(test_caption_file, test_image_dir, max_length)
+    # test_dataset = _process_caption_data(test_caption_file, test_image_dir, max_length)
     # init make dirs
     sub_train_split = ['train' + str(i) for i in range(21)]
-    split_parts = ['train', 'val', 'test'] + sub_train_split
+    # split_parts = ['train', 'val', 'test'] + sub_train_split
+    split_parts = ['train', 'val'] + sub_train_split
     for split in split_parts:
         path = 'data/' + split
         if not os.path.exists(path):
@@ -163,7 +164,7 @@ def main():
 
     save_pickle(train_dataset, 'data/train/train.annotations.pkl')
     save_pickle(val_dataset, 'data/val/val.annotations.pkl')
-    save_pickle(test_dataset, 'data/test/test.annotations.pkl')
+    # save_pickle(test_dataset, 'data/test/test.annotations.pkl')
 
     block_size = len(train_dataset)/21
     for i in range(21):
@@ -209,7 +210,7 @@ def main():
             for start, end in zip(range(0, n_examples, batch_size),
                                   range(batch_size, n_examples + batch_size, batch_size)):
                 image_batch_file = image_path[start:end]
-                image_batch = np.array(map(lambda x: np.array(resize_image(Image.open(x))), image_batch_file)).astype(
+                image_batch = np.array(map(lambda x: load_and_resize_image(x), image_batch_file)).astype(
                     np.float32)
                 feats = sess.run(vggnet.features, feed_dict={vggnet.images: image_batch})
                 all_feats[start:end, :] = feats
