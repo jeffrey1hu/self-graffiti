@@ -130,8 +130,8 @@ def generate_contest_reference(annotations, split):
         ref_annotations.append({'caption': fenci_caption, 'id': id, 'image_id': image_hash})
         id += 1
     result = {'annotations': ref_annotations, 'images': ref_images, "type": "captions", 'info': {}, 'licenses': {}}
-    json.dump(result, open('./data/%s/%s.references.json' % (split, split), 'w'))
     print "Finished building %s caption dataset" %split
+    return result
 
 def main():
     # batch size for extracting feature vectors from vggnet.
@@ -145,9 +145,14 @@ def main():
     image_dir = TRAIN_DATA_PATH + '/caption_train_images_20170902/'
     val_caption_file = VAL_DATA_PATH + '/caption_validation_annotations_20170910.json'
     val_image_dir = VAL_DATA_PATH + '/caption_validation_images_20170910/'
+    test_caption_file = TEST_DATA_PATH + '/caption_validation_annotations_20170910.json'
+    test_image_dir = TEST_DATA_PATH + '/caption_validation_images_20170910/'
+
+
 
     train_dataset = _process_caption_data(train_caption_file, image_dir, max_length)
     val_dataset = _process_caption_data(val_caption_file, val_image_dir, max_length)
+    test_dataset = _process_caption_data(test_caption_file, test_image_dir, max_length)
     # init make dirs
     sub_train_split = ['train' + str(i) for i in range(21)]
     split_parts = ['train', 'val', 'test'] + sub_train_split
@@ -157,8 +162,8 @@ def main():
             os.makedirs(path)
 
     save_pickle(train_dataset, 'data/train/train.annotations.pkl')
-    save_pickle(val_dataset[:-5 * 4000].reset_index(drop=True), 'data/val/val.annotations.pkl')
-    save_pickle(val_dataset[-5 * 4000:].reset_index(drop=True), 'data/test/test.annotations.pkl')
+    save_pickle(val_dataset, 'data/val/val.annotations.pkl')
+    save_pickle(test_dataset, 'data/test/test.annotations.pkl')
 
     block_size = len(train_dataset)/21
     for i in range(21):
@@ -180,18 +185,8 @@ def main():
         image_idxs = _build_image_idxs(annotations, id_to_idx)
         save_pickle(image_idxs, './data/%s/%s.image.idxs.pkl' % (split, split))
 
-        # prepare reference captions to compute bleu scores later
-        # image_ids = set()
-        # feature_to_captions = {}
-        # i = -1
-        # for caption, image_id in zip(annotations['caption'], annotations['image_id']):
-        #     if not image_id in image_ids:
-        #         image_ids.add(image_id)
-        #         i += 1
-        #         feature_to_captions[i] = []
-        #     feature_to_captions[i].append(caption + ' .')
-        # save_pickle(feature_to_captions, './data/%s/%s.references.pkl' % (split, split))
-        # print "Finished building %s caption dataset" %split
+        reference_json = generate_contest_reference(annotations, split)
+        json.dump(reference_json, open('./data/%s/%s.references.json' % (split, split), 'w'))
 
     # extract conv5_3 feature vectors
     init_op = tf.initialize_all_variables()
