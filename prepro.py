@@ -145,10 +145,7 @@ def main():
     image_dir = TRAIN_DATA_PATH + '/caption_train_images_20170902/'
     val_caption_file = VAL_DATA_PATH + '/caption_validation_annotations_20170910.json'
     val_image_dir = VAL_DATA_PATH + '/caption_validation_images_20170910/'
-    # test_caption_file = TEST_DATA_PATH + '/caption_validation_annotations_20170910.json'
     # test_image_dir = TEST_DATA_PATH + '/caption_validation_images_20170910/'
-
-
 
     train_dataset = _process_caption_data(train_caption_file, image_dir, max_length)
     val_dataset = _process_caption_data(val_caption_file, val_image_dir, max_length)
