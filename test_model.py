@@ -83,8 +83,8 @@ if __name__ == '__main__':
     with open('./data/train/word_to_idx.pkl', 'rb') as f:
         word_to_idx = pickle.load(f)
     _model = CaptionGenerator(word_to_idx, dim_feature=[196, 512], dim_embed=512,
-                                       dim_hidden=1024, n_time_step=16, prev2out=True,
-                                                 ctx2out=True, alpha_c=1.0, selector=True, dropout=True)
+                                       dim_hidden=2000, n_time_step=16, prev2out=True,
+                                                 ctx2out=True, alpha_c=0.5, selector=True, dropout=True)
     solver = CaptioningSolver(_model, data, data, n_epochs=15, batch_size=128, update_rule='adam',
                                           learning_rate=0.001, print_every=500, save_every=1, image_path='/mnt/ai_challenger_caption_validation_20170910/caption_validation_images_20170910',
                                     pretrained_model=None, model_path='./model/lstm6', test_model='./model/lstm6/model-16',
