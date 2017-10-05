@@ -73,7 +73,7 @@ def main(solver):
 
     evaluated_captions = []
     for idx, caption in enumerate(all_decoded):
-        image_id = file_names[idx][-1]
+        image_id = file_names[idx]
         evaluated_captions.append({'image_id': image_id, 'caption': caption})
     json.dump(evaluated_captions, open('./data/%s/%s.evaluated.json' % (SPLIT, SPLIT), 'w'))
 
