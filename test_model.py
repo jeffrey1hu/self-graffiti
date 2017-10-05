@@ -10,12 +10,13 @@ from core.solver import CaptioningSolver
 from core.model import CaptionGenerator
 
 test_image_dir = TEST_DATA_PATH + '/caption_test1_images_20170923/'
-batch_size = 128
+batch_size = 64
 SPLIT = 'test'
 
 
 def main(solver):
-    save_path = './data/%s/%s.features.hkl' % (SPLIT, SPLIT)
+    image_feature_save_path = './data/%s/%s.features.hkl' % (SPLIT, SPLIT)
+    file_name_save_path = './data/%s/%s.file_names.hkl' % (SPLIT, SPLIT)
     file_names = os.listdir(test_image_dir)
     image_path = map(lambda _path: test_image_dir + _path, file_names)
     n_examples = len(image_path)
@@ -37,8 +38,10 @@ def main(solver):
             print ("Processed %d %s features.." % (end, SPLIT))
 
         # use hickle to save huge feature vectors
-        hickle.dump(all_feats, save_path)
-        print ("Saved %s.." % (save_path))
+        hickle.dump(all_feats, image_feature_save_path)
+        hickle.dump(file_names, file_name_save_path)
+        print ("Saved %s.." % (image_feature_save_path))
+        print ("Saved %s.." % (file_name_save_path))
 
     # generate captions dump as json
     _, _, generated_captions = solver.model.build_sampler(max_len=20)
@@ -78,6 +81,6 @@ if __name__ == '__main__':
                                                  ctx2out=True, alpha_c=1.0, selector=True, dropout=True)
     solver = CaptioningSolver(_model, data, data, n_epochs=15, batch_size=128, update_rule='adam',
                                           learning_rate=0.001, print_every=500, save_every=1, image_path='/mnt/ai_challenger_caption_validation_20170910/caption_validation_images_20170910',
-                                    pretrained_model=None, model_path='./model/lstm6', test_model='./model/lstm/model-16',
+                                    pretrained_model=None, model_path='./model/lstm6', test_model='./model/lstm6/model-16',
                                      print_bleu=False, log_path='./log/')
     main(solver)
